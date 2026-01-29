@@ -137,6 +137,8 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body
 
+  console.log('📝 Tentativa de signup:', { name, email })
+
   try {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -144,10 +146,43 @@ router.post('/signup', async (req, res) => {
     })
 
     if (error) {
+      console.error('❌ Erro no auth.signUp:', error)
       return res.status(400).json({ error: error.message })
     }
 
-    // Criar perfil do usuário
+    console.log('✅ Usuário criado no auth:', data.user.id)
+
+    // Aguardar um pouco para o trigger executar
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // Verificar se o perfil foi criado pelo trigger
+    const { data: existingUser, error: checkError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', data.user.id)
+      .single()
+
+    console.log('🔍 Verificando se perfil foi criado:', { existingUser, checkError })
+
+    if (existingUser) {
+      console.log('✅ Perfil já existe (criado pelo trigger)')
+      return res.status(201).json({
+        user: {
+          id: existingUser.id,
+          email: existingUser.email,
+          name: existingUser.name,
+          plan: existingUser.plan,
+          role: existingUser.role,
+          createdAt: existingUser.created_at,
+          enabledModules: existingUser.enabled_modules,
+          lastLogin: new Date().toISOString(),
+        },
+        token: data.session?.access_token,
+      })
+    }
+
+    // Se o trigger não funcionou, criar manualmente
+    console.log('⚠️ Trigger não criou perfil, criando manualmente...')
     const { error: profileError } = await supabase
       .from('users')
       .insert({
@@ -160,12 +195,14 @@ router.post('/signup', async (req, res) => {
       })
 
     if (profileError) {
-      console.error('Erro ao criar perfil do usuário:', profileError)
+      console.error('❌ Erro ao criar perfil manualmente:', profileError)
       return res.status(400).json({
-        error: 'Erro ao criar perfil. Execute o schema.sql no Supabase primeiro.',
+        error: 'Database error saving new user',
         details: profileError.message
       })
     }
+
+    console.log('✅ Perfil criado com sucesso manualmente')
 
     res.status(201).json({
       user: {
@@ -199,6 +236,31 @@ router.post('/reset-password', async (req, res) => {
     res.json({ message: 'Email de redefinição enviado' })
   } catch (err) {
     res.status(500).json({ error: 'Erro interno do servidor' })
+  }
+})
+
+// Update password (após clicar no link do email de recovery)
+router.post('/update-password', async (req, res) => {
+  const { password, access_token } = req.body
+
+  try {
+    if (!password || !access_token) {
+      return res.status(400).json({ error: 'Senha e token são obrigatórios' })
+    }
+
+    // Usar o access_token para validar e atualizar
+    const { data, error } = await supabase.auth.updateUser(
+      { password },
+      { access_token }
+    )
+
+    if (error) {
+      return res.status(400).json({ error: error.message })
+    }
+
+    res.json({ message: 'Senha atualizada com sucesso' })
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao atualizar senha' })
   }
 })
 

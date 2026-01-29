@@ -6,10 +6,12 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
+  isRecoveringPassword: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
   clearError: () => void;
 }
 
@@ -31,11 +33,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRecoveringPassword, setIsRecoveringPassword] = useState(false);
 
-  // Initialize from localStorage
+  // Initialize from localStorage and check for password recovery flow
   useEffect(() => {
     const storedUser = localStorage.getItem("flowcash_user");
     const storedToken = localStorage.getItem("flowcash_token");
+    
+    // Check if we're in password recovery flow from Supabase link
+    const hash = window.location.hash;
+    const isPasswordRecovery = hash.includes("type=recovery") && hash.includes("access_token");
+    
+    if (isPasswordRecovery) {
+      setIsRecoveringPassword(true);
+      // Don't wait for normal auth flow when recovering password
+      setLoading(false);
+      return;
+    }
+    
     if (storedUser && storedToken) {
       try {
         const parsedUser = JSON.parse(storedUser);
@@ -116,6 +131,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updatePassword = async (password: string) => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      // Extract access token from URL hash
+      const hash = window.location.hash;
+      const tokenMatch = hash.match(/access_token=([^&]*)/);
+      
+      if (!tokenMatch) {
+        throw new Error("Token de recuperação não encontrado");
+      }
+
+      const accessToken = tokenMatch[1];
+
+      await api.post('/auth/update-password', { 
+        password,
+        access_token: accessToken
+      });
+
+      setIsRecoveringPassword(false);
+      localStorage.removeItem("flowcash_user");
+      localStorage.removeItem("flowcash_token");
+      removeAuthToken();
+      setUser(null);
+    } catch (err: any) {
+      const message = err.response?.data?.error || "Password update failed";
+      setError(message);
+      throw new Error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clearError = () => {
     setError(null);
   };
@@ -126,10 +175,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user,
         loading,
         error,
+        isRecoveringPassword,
         login,
         signup,
         logout,
         resetPassword,
+        updatePassword,
         clearError,
       }}
     >
