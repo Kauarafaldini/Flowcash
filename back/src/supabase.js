@@ -1,6 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { createLocalSupabase } from './localDb.js'
 
-export const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-)
+// Modo 100% Local / Offline sem necessidade de Supabase externo
+export const supabase = createLocalSupabase()
+export const supabaseAdmin = supabase

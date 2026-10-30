@@ -1,4 +1,4 @@
-import { supabase } from '../supabase.js'
+import { supabaseAdmin } from '../supabase.js'
 
 export async function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization
@@ -9,26 +9,28 @@ export async function authMiddleware(req, res, next) {
 
   const token = authHeader.replace('Bearer ', '')
 
-  const { data, error } = await supabase.auth.getUser(token)
+  // Validar usuário pelo token
+  const { data, error } = await supabaseAdmin.auth.getUser(token)
 
   if (error || !data?.user) {
     return res.status(401).json({ error: 'Token inválido' })
   }
 
-  // Buscar dados adicionais do usuário da tabela users
-  const { data: userData, error: userError } = await supabase
+  // Buscar perfil (ignora RLS com service role)
+  const { data: profile, error: profileError } = await supabaseAdmin
     .from('users')
     .select('*')
     .eq('id', data.user.id)
     .single()
 
-  if (userError) {
-    return res.status(400).json({ error: userError.message })
+  if (profileError || !profile) {
+    return res.status(403).json({ error: 'Perfil não encontrado' })
   }
 
   req.user = {
     ...data.user,
-    ...userData
+    ...profile,
   }
+
   next()
 }

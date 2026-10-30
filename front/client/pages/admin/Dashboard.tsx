@@ -3,18 +3,6 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { DashboardStats } from "@shared/types";
 
-const generateMockStats = (): DashboardStats => {
-  return {
-    totalUsers: 1245,
-    activeUsers: 892,
-    usersByPlan: {
-      free: 650,
-      premium: 420,
-      pro: 175,
-    },
-    monthlyGrowth: 12.5,
-  };
-};
 
 const StatCard = ({
   label,
@@ -63,10 +51,34 @@ const StatCard = ({
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
 
-  useEffect(() => {
-    // Load stats
-    setStats(generateMockStats());
-  }, []);
+useEffect(() => {
+  async function loadStats() {
+    try {
+      const token = localStorage.getItem('token')
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/stats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      if (!res.ok) {
+        throw new Error('Erro ao carregar dashboard')
+      }
+
+      const data = await res.json()
+      setStats(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  loadStats()
+}, [])
+
 
   if (!stats) {
     return <AdminLayout>Carregando...</AdminLayout>;

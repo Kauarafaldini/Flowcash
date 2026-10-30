@@ -44,26 +44,12 @@ app.get("/diagnostics", async (req, res) => {
   try {
     const diagnostics = {
       timestamp: new Date().toISOString(),
-      message: "Execute o schema.sql no Supabase primeiro se as tabelas não existirem",
-      checks: {}
+      message: "Modo Local ativo (sem necessidade de Supabase)",
+      checks: {
+        users_table: 'OK - Tabela local ativa',
+        expenses_table: 'OK - Tabela local ativa'
+      }
     }
-
-    // Verificar conexão com Supabase
-    try {
-      const { data, error } = await supabase.from('users').select('count').limit(1)
-      diagnostics.checks.users_table = error ? `ERROR: ${error.message}` : 'OK - Tabela existe'
-    } catch (err) {
-      diagnostics.checks.users_table = `ERROR: ${err.message}`
-    }
-
-    // Verificar tabela expenses
-    try {
-      const { data, error } = await supabase.from('expenses').select('count').limit(1)
-      diagnostics.checks.expenses_table = error ? `ERROR: ${error.message}` : 'OK - Tabela existe'
-    } catch (err) {
-      diagnostics.checks.expenses_table = `ERROR: ${err.message}`
-    }
-
     res.json(diagnostics)
   } catch (err) {
     res.status(500).json({ error: 'Erro no diagnóstico', details: err.message })

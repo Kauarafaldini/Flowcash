@@ -1,0 +1,184 @@
+{
+  "users": [
+    {
+      "id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "name": "John Doe",
+      "email": "user@example.com",
+      "password": "password123",
+      "plan": "free",
+      "role": "user",
+      "enabled_modules": [
+        "core_financial"
+      ],
+      "created_at": "2026-09-29T23:40:13.487Z",
+      "updated_at": "2026-10-29T23:40:13.489Z"
+    },
+    {
+      "id": "b1a2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+      "name": "Jane Premium",
+      "email": "premium@example.com",
+      "password": "password123",
+      "plan": "premium",
+      "role": "user",
+      "enabled_modules": [
+        "core_financial",
+        "organization_control",
+        "simulations"
+      ],
+      "created_at": "2026-10-09T23:40:13.489Z",
+      "updated_at": "2026-10-29T23:40:13.491Z"
+    },
+    {
+      "id": "a9b8c7d6-e5f4-4a3b-2c1d-0e9f8a7b6c5d",
+      "name": "Admin FlowCash",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "plan": "pro",
+      "role": "admin",
+      "enabled_modules": [
+        "core_financial",
+        "organization_control",
+        "simulations",
+        "investments"
+      ],
+      "created_at": "2026-08-30T23:40:13.491Z",
+      "updated_at": "2026-10-29T23:40:13.491Z"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "33b06210-4849-4a90-a991-34e1f03feab6",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "value": 234.5,
+      "category": "Alimentação",
+      "payment_method": "Débito",
+      "installments": 1,
+      "description": "Supermercado Pão de Açúcar",
+      "date": "2026-10-29",
+      "created_at": "2026-10-29T23:40:13.493Z"
+    },
+    {
+      "id": "5e652c6b-157f-4fc1-ad08-6697e80ce389",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "value": 78.9,
+      "category": "Outros",
+      "payment_method": "Débito",
+      "installments": 1,
+      "description": "Gás Natural",
+      "date": "2026-10-22",
+      "created_at": "2026-10-22T23:40:13.493Z"
+    },
+    {
+      "id": "085b7b2f-fa10-4ab3-9011-4ece503c4e95",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "value": 1200,
+      "category": "Aluguel",
+      "payment_method": "Débito",
+      "installments": 1,
+      "description": "Aluguel Apartamento",
+      "date": "2026-10-14",
+      "created_at": "2026-10-14T23:40:13.493Z"
+    },
+    {
+      "id": "653cf486-7434-4e95-888d-c41fdfb25c32",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "value": 45.9,
+      "category": "Alimentação",
+      "payment_method": "Débito",
+      "installments": 1,
+      "description": "Lanche da tarde",
+      "date": "2026-10-29",
+      "created_at": "2026-10-29T23:42:28.538Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "53c47953-591c-4154-b684-591e0980ec4f",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "type": "income",
+      "title": "Salário Mensal",
+      "amount": 5200,
+      "category": "Salário",
+      "date": "2026-10-24T23:40:13.493Z",
+      "installment_number": 1,
+      "total_installments": 1
+    },
+    {
+      "id": "1f041869-5546-4b5d-b40c-f716f70b77af",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "type": "expense",
+      "title": "Supermercado",
+      "amount": 234.5,
+      "category": "Alimentação",
+      "date": "2026-10-29T23:40:13.493Z",
+      "installment_number": 1,
+      "total_installments": 1
+    },
+    {
+      "id": "7bc2a5e4-4a18-471e-9e58-3d8467f40196",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "type": "expense",
+      "title": "Aluguel",
+      "amount": 1200,
+      "category": "Moradia",
+      "date": "2026-10-14T23:40:13.493Z",
+      "installment_number": 1,
+      "total_installments": 1
+    }
+  ],
+  "goals": [
+    {
+      "id": "aff3af0e-48ab-4949-963a-554ed0d181f0",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "title": "Fundo de Emergência",
+      "total_value": 6000,
+      "current_value": 4500,
+      "created_at": "2026-10-29T23:40:13.493Z"
+    },
+    {
+      "id": "81053f73-4ba5-4d41-b83f-03e427709464",
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "title": "Férias de Fim de Ano",
+      "total_value": 3500,
+      "current_value": 2100,
+      "created_at": "2026-10-29T23:40:13.493Z"
+    }
+  ],
+  "user_modules": [
+    {
+      "user_id": "346fe106-a5b9-40b6-9be9-b9f216511bce",
+      "enabled": true,
+      "modules": {
+        "slug": "core_financial"
+      }
+    },
+    {
+      "user_id": "b1a2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+      "enabled": true,
+      "modules": {
+        "slug": "core_financial"
+      }
+    },
+    {
+      "user_id": "b1a2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+      "enabled": true,
+      "modules": {
+        "slug": "organization_control"
+      }
+    },
+    {
+      "user_id": "a9b8c7d6-e5f4-4a3b-2c1d-0e9f8a7b6c5d",
+      "enabled": true,
+      "modules": {
+        "slug": "core_financial"
+      }
+    },
+    {
+      "user_id": "a9b8c7d6-e5f4-4a3b-2c1d-0e9f8a7b6c5d",
+      "enabled": true,
+      "modules": {
+        "slug": "admin"
+      }
+    }
+  ]
+}

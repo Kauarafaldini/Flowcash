@@ -3,7 +3,7 @@
 // Script para testar se o perfil foi criado
 // Execute: node test-profile.js
 
-const https = require('https')
+const http = require('http')
 
 const API_BASE = 'http://localhost:3333'
 const USER_ID = '346fe106-a5b9-40b6-9be9-b9f216511bce'
@@ -18,7 +18,7 @@ async function testProfile() {
     method: 'GET'
   }
 
-  const req = https.request(options, (res) => {
+  const req = http.request(options, (res) => {
     let body = ''
     res.on('data', (chunk) => body += chunk)
     res.on('end', () => {
